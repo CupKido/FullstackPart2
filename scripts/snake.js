@@ -1,94 +1,105 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const squares = document.querySelectorAll('.grid div')
-  const scoreDisplay = document.querySelector('span')
-  const startBtn = document.querySelector('.start')
 
-  const width = 10
-  let currentIndex = 0 //so first div in our grid
-  let appleIndex = 0 //so first div in our grid
-  let currentSnake = [2,1,0] 
-  let direction = 1
-  let score = 0
-  let speed = 0.9
-  let intervalTime = 0
-  let interval = 0
+//board
+var blockSize = 25;
+var rows = 20;
+var cols = 20;
+var board;
+var context; 
 
+//snake head
+var snakeX = blockSize * 5;
+var snakeY = blockSize * 5;
 
-  //to start, and restart the game
-  function startGame() {
-    currentSnake.forEach(index => squares[index].classList.remove('snake'))
-    squares[appleIndex].classList.remove('apple')
-    clearInterval(interval)
-    score = 0
-    randomApple()
-    direction = 1
-    scoreDisplay.innerText = score
-    intervalTime = 1000
-    currentSnake = [2,1,0]
-    currentIndex = 0
-    currentSnake.forEach(index => squares[index].classList.add('snake'))
-    interval = setInterval(moveOutcomes, intervalTime)
-  }
+var velocityX = 0;
+var velocityY = 0;
 
+var snakeBody = [];
 
-  //function that deals with ALL the ove outcomes of the Snake
-  function moveOutcomes() {
+//food
+var foodX;
+var foodY;
 
-    //deals with snake hitting border and snake hitting self
-    if (
-      (currentSnake[0] + width >= (width * width) && direction === width ) || //if snake hits bottom
-      (currentSnake[0] % width === width -1 && direction === 1) || //if snake hits right wall
-      (currentSnake[0] % width === 0 && direction === -1) || //if snake hits left wall
-      (currentSnake[0] - width < 0 && direction === -width) ||  //if snake hits the top
-      squares[currentSnake[0] + direction].classList.contains('snake') //if snake goes into itself
-    ) {
-      return clearInterval(interval) //this will clear the interval if any of the above happen
+var gameOver = false;
+
+window.onload = function() {
+    board = document.getElementById("board");
+    board.height = rows * blockSize;
+    board.width = cols * blockSize;
+    context = board.getContext("2d"); //used for drawing on the board
+
+    placeFood();
+    document.addEventListener("keyup", changeDirection);
+    // update();
+    setInterval(update, 1000/10); //100 milliseconds
+}
+
+function update() {
+    if (gameOver) {
+        return;
     }
 
-    const tail = currentSnake.pop() //removes last ite of the array and shows it
-    squares[tail].classList.remove('snake')  //removes class of snake from the TAIL
-    currentSnake.unshift(currentSnake[0] + direction) //gives direction to the head of the array
+    context.fillStyle="black";
+    context.fillRect(0, 0, board.width, board.height);
 
-    //deals with snake getting apple
-    if(squares[currentSnake[0]].classList.contains('apple')) {
-      squares[currentSnake[0]].classList.remove('apple')
-      squares[tail].classList.add('snake')
-      currentSnake.push(tail)
-      randomApple()
-      score++
-      scoreDisplay.textContent = score
-      clearInterval(interval)
-      intervalTime = intervalTime * speed
-      interval = setInterval(moveOutcomes, intervalTime)
+    context.fillStyle="red";
+    context.fillRect(foodX, foodY, blockSize, blockSize);
+
+    if (snakeX == foodX && snakeY == foodY) {
+        snakeBody.push([foodX, foodY]);
+        placeFood();
     }
-    squares[currentSnake[0]].classList.add('snake')
-  }
 
-
-  //generate new apple once apple is eaten
-  function randomApple() {
-    do{
-      appleIndex = Math.floor(Math.random() * squares.length)
-    } while(squares[appleIndex].classList.contains('snake')) //making sure apples dont appear on the snake
-    squares[appleIndex].classList.add('apple')
-  }
-
-
-  //assign functions to keycodes
-  function control(e) {
-    squares[currentIndex].classList.remove('snake')
-
-    if(e.keyCode === 39) {
-      direction = 1 //if we press the right arrow on our keyboard, the snake will go right one
-    } else if (e.keyCode === 38) {
-      direction = -width // if we press the up arrow, the snake will go back ten divs, appearing to go up
-    } else if (e.keyCode === 37) {
-      direction = -1 // if we press left, the snake will go left one div
-    } else if (e.keyCode === 40) {
-      direction = +width //if we press down, the snake head will instantly appear in the div ten divs from where you are now
+    for (let i = snakeBody.length-1; i > 0; i--) {
+        snakeBody[i] = snakeBody[i-1];
     }
-  }
+    if (snakeBody.length) {
+        snakeBody[0] = [snakeX, snakeY];
+    }
 
-  document.addEventListener('keyup', control)
-  startBtn.addEventListener('click', startGame)
-})
+    context.fillStyle="lime";
+    snakeX += velocityX * blockSize;
+    snakeY += velocityY * blockSize;
+    context.fillRect(snakeX, snakeY, blockSize, blockSize);
+    for (let i = 0; i < snakeBody.length; i++) {
+        context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);
+    }
+
+    //game over conditions
+    if (snakeX < 0 || snakeX > cols*blockSize || snakeY < 0 || snakeY > rows*blockSize) {
+        gameOver = true;
+        alert("Game Over");
+    }
+
+    for (let i = 0; i < snakeBody.length; i++) {
+        if (snakeX == snakeBody[i][0] && snakeY == snakeBody[i][1]) {
+            gameOver = true;
+            alert("Game Over");
+        }
+    }
+}
+
+function changeDirection(e) {
+    if (e.code == "ArrowUp" && velocityY != 1) {
+        velocityX = 0;
+        velocityY = -1;
+    }
+    else if (e.code == "ArrowDown" && velocityY != -1) {
+        velocityX = 0;
+        velocityY = 1;
+    }
+    else if (e.code == "ArrowLeft" && velocityX != 1) {
+        velocityX = -1;
+        velocityY = 0;
+    }
+    else if (e.code == "ArrowRight" && velocityX != -1) {
+        velocityX = 1;
+        velocityY = 0;
+    }
+}
+
+
+function placeFood() {
+    //(0-1) * cols -> (0-19.9999) -> (0-19) * 25
+    foodX = Math.floor(Math.random() * cols) * blockSize;
+    foodY = Math.floor(Math.random() * rows) * blockSize;
+}
