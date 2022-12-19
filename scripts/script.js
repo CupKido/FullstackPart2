@@ -10,6 +10,7 @@ function LogIn(){
     var password = passElement.value;
     if(usersdatabase[username]["Password"] != password)
     {
+        console.log("password doesnt match");
         return;
     }
     const d = new Date();
@@ -25,6 +26,7 @@ function LogIn(){
     if(addpoints){
         AddToScore(5, username, "daily login");
     }
+    SaveLoggedUser();
     LoadHomePage();
 }
 
@@ -99,6 +101,9 @@ function AddToScore(score, username, scorefor){
 }
 
 function LoadHomePage(){ 
+    console.log("Loading other page");
+    window.location.replace("../pages/home.html");
+    return;
     var SigninDiv = document.getElementById("signin");
     SigninDiv.classList.add("hidden");
     var ContentDiv = document.getElementById("maincontent");
@@ -109,4 +114,8 @@ function LoadHomePage(){
     //userElement.value = LoggedUser["username"];
     userElement.innerHTML = LoggedUser["username"];
     console.log(userElement);
+}
+
+function SaveLoggedUser() {
+     localStorage.setItem("LoggedUser", JSON.stringify(LoggedUser));
 }
