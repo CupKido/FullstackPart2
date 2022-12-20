@@ -54,20 +54,29 @@ function updateTile(tile, num) {
 document.addEventListener('keyup', (e) => {
     if (e.code == "ArrowLeft") {
         slideLeft();
-        setTwo();
+
+        if(setTwo()==false){
+            alert("Game Over"+" "+"Your score is: "+score);
+           }
     }
     else if (e.code == "ArrowRight") {
         slideRight();
-        setTwo();
+        if(setTwo()==false){
+            alert("Game Over"+" "+"Your score is: "+score);
+           }
     }
     else if (e.code == "ArrowUp") {
         slideUp();
-        setTwo();
+        if(setTwo()==false){
+            alert("Game Over"+" "+"Your score is: "+score);
+           }
 
     }
     else if (e.code == "ArrowDown") {
         slideDown();
-        setTwo();
+        if(setTwo()==false){
+            alert("Game Over"+" "+"Your score is: "+score);
+           }
     }
     document.getElementById("score").innerText = score;
 })
@@ -159,7 +168,7 @@ function slideDown() {
 
 function setTwo() {
     if (!hasEmptyTile()) {
-        return;
+        return false;
     }
     let found = false;
     while (!found) {
