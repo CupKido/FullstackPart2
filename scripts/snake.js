@@ -20,6 +20,7 @@ var foodX;
 var foodY;
 
 var gameOver = false;
+var speed=1;
 
 window.onload = function() {
     board = document.getElementById("board");
@@ -30,9 +31,21 @@ window.onload = function() {
     placeFood();
     document.addEventListener("keyup", changeDirection);
     // update();
-    let btn = document.getElementById("btn");
-    let val = btn.value;
-    setInterval(update, val); //100 milliseconds
+    let buttonList = document.querySelectorAll("button");
+    buttonList.forEach(function(i){
+      i.addEventListener("click", function(e){
+      if(e.target.innerHTML=="Easy"){
+         speed=5;
+      }
+      if(e.target.innerHTML=="Medium"){
+        speed=2;
+     }
+     if(e.target.innerHTML=="Hard"){
+        speed=1;
+     }
+      })
+    })
+    setInterval(update, 100); //100 milliseconds
 }
 
 function update() {
@@ -46,7 +59,7 @@ function update() {
     context.fillStyle="red";
     context.fillRect(foodX, foodY, blockSize, blockSize);
 
-    if (snakeX == foodX && snakeY == foodY) {
+    if (snakeX > foodX-25 && snakeX < foodX+25 && snakeY < foodY+25 && snakeY > foodY-25) {
         snakeBody.push([foodX, foodY]);
         placeFood();
     }
@@ -59,8 +72,8 @@ function update() {
     }
 
     context.fillStyle="lime";
-    snakeX += velocityX * blockSize;
-    snakeY += velocityY * blockSize;
+    snakeX += velocityX * blockSize/speed;
+    snakeY += velocityY * blockSize/speed;
     context.fillRect(snakeX, snakeY, blockSize, blockSize);
     for (let i = 0; i < snakeBody.length; i++) {
         context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);
