@@ -21,6 +21,7 @@ var foodY;
 
 var gameOver = false;
 var speed=1;
+var score=0;
 
 window.onload = function() {
     board = document.getElementById("board");
@@ -37,10 +38,10 @@ window.onload = function() {
       if(e.target.innerHTML=="Easy"){
          speed=5;
       }
-      if(e.target.innerHTML=="Medium"){
+     else if(e.target.innerHTML=="Medium"){
         speed=2;
      }
-     if(e.target.innerHTML=="Hard"){
+    else if(e.target.innerHTML=="Hard"){
         speed=1;
      }
       })
@@ -52,7 +53,7 @@ function update() {
     if (gameOver) {
         return;
     }
-
+    document.getElementById('score').innerHTML = "Score: " + score;
     context.fillStyle="black";
     context.fillRect(0, 0, board.width, board.height);
 
@@ -61,6 +62,7 @@ function update() {
 
     if (snakeX > foodX-25 && snakeX < foodX+25 && snakeY < foodY+25 && snakeY > foodY-25) {
         snakeBody.push([foodX, foodY]);
+        score++;
         placeFood();
     }
 
