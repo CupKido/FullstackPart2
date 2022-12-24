@@ -43,7 +43,10 @@ function SignUp() {
     var username = userElement.value;
     var passElement = document.getElementById("PasswordText");
     var password = passElement.value;
-    if (!UsernameIsValid(username)) return;
+    if (!UsernameIsValid(username)) {
+        alert("Username already taken!")
+        return;
+    }
 
     const d = new Date();
     var text = d.toString();
