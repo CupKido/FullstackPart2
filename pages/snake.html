@@ -1,24 +1,38 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport", content="width=device-width, initial-scale=1.0">
-        <title>Snake</title>
-        <link rel="stylesheet" href="../styles/snake.css">
-        <script src="../scripts/snake.js"></script>
-    </head>
 
-    <body>
-      <div style="text-align:center">
-        <h1>Snake</h1>
-        <h2>Select difficulty level:  <button id="btn" value=500>Easy</button>
-          <button >Medium</button>
-          <button>Hard</button>  </h2>
-          <h3 id="score"></h3>
-       
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" , content="width=device-width, initial-scale=1.0">
+  <title>Snake</title>
+  <link rel="stylesheet" href="../styles/snake.css">
+  <link rel="stylesheet" href="../styles/style.css" type="text/css">
+  <script src="../scripts/snake.js" type="module"></script>
+</head>
+
+<body>
+  <nav>
+    <ul>
+      <li id="navusername"></li>
+      <li><a href="./home.html">Home</a></li>
+      <li><a href="./2048.html">2048</a></li>
+      <li><a href="./snake.html">snake</a></li>
+      <li><a href="./logOut.html">Log Out</a></li>
+    </ul>
+  </nav>
+
+  <div style="text-align:center">
+    <h1>Snake</h1>
+    <h2>Select difficulty level: <button id="btn" value=500>Easy</button>
+      <button>Medium</button>
+      <button>Hard</button>
+    </h2>
+    <h3 id="score"></h3>
 
 
-      </div>
-        <canvas id="board"></canvas>
-    </body>
+
+  </div>
+  <canvas id="board"></canvas>
+</body>
+
 </html>

@@ -1,10 +1,11 @@
-
+import * as db from '../scripts/dbfuncs.js'
+db.LoadUser();
 //board
 var blockSize = 25;
 var rows = 20;
 var cols = 20;
 var board;
-var context; 
+var context;
 
 //snake head
 var snakeX = blockSize * 5;
@@ -20,10 +21,10 @@ var foodX;
 var foodY;
 
 var gameOver = false;
-var speed=1;
-var score=0;
+var speed = 1;
+var score = 0;
 
-window.onload = function() {
+window.onload = function () {
     board = document.getElementById("board");
     board.height = rows * blockSize;
     board.width = cols * blockSize;
@@ -33,18 +34,18 @@ window.onload = function() {
     document.addEventListener("keyup", changeDirection);
     // update();
     let buttonList = document.querySelectorAll("button");
-    buttonList.forEach(function(i){
-      i.addEventListener("click", function(e){
-      if(e.target.innerHTML=="Easy"){
-         speed=5;
-      }
-     else if(e.target.innerHTML=="Medium"){
-        speed=2;
-     }
-    else if(e.target.innerHTML=="Hard"){
-        speed=1;
-     }
-      })
+    buttonList.forEach(function (i) {
+        i.addEventListener("click", function (e) {
+            if (e.target.innerHTML == "Easy") {
+                speed = 5;
+            }
+            else if (e.target.innerHTML == "Medium") {
+                speed = 2;
+            }
+            else if (e.target.innerHTML == "Hard") {
+                speed = 1;
+            }
+        })
     })
     setInterval(update, 100); //100 milliseconds
 }
@@ -54,44 +55,53 @@ function update() {
         return;
     }
     document.getElementById('score').innerHTML = "Score: " + score;
-    context.fillStyle="black";
+    context.fillStyle = "black";
     context.fillRect(0, 0, board.width, board.height);
 
-    context.fillStyle="red";
+    context.fillStyle = "red";
     context.fillRect(foodX, foodY, blockSize, blockSize);
 
-    if (snakeX > foodX-25 && snakeX < foodX+25 && snakeY < foodY+25 && snakeY > foodY-25) {
+    if (snakeX > foodX - 25 && snakeX < foodX + 25 && snakeY < foodY + 25 && snakeY > foodY - 25) {
         snakeBody.push([foodX, foodY]);
         score++;
         placeFood();
     }
 
-    for (let i = snakeBody.length-1; i > 0; i--) {
-        snakeBody[i] = snakeBody[i-1];
+    for (let i = snakeBody.length - 1; i > 0; i--) {
+        snakeBody[i] = snakeBody[i - 1];
     }
     if (snakeBody.length) {
         snakeBody[0] = [snakeX, snakeY];
     }
 
-    context.fillStyle="lime";
-    snakeX += velocityX * blockSize/speed;
-    snakeY += velocityY * blockSize/speed;
+    context.fillStyle = "lime";
+    snakeX += velocityX * blockSize / speed;
+    snakeY += velocityY * blockSize / speed;
     context.fillRect(snakeX, snakeY, blockSize, blockSize);
     for (let i = 0; i < snakeBody.length; i++) {
         context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);
     }
 
     //game over conditions
-    if (snakeX < 0 || snakeX > cols*blockSize || snakeY < 0 || snakeY > rows*blockSize) {
+    if (snakeX < 0 || snakeX > cols * blockSize || snakeY < 0 || snakeY > rows * blockSize) {
         gameOver = true;
-        alert("Game Over");
+        endGame();
     }
 
     for (let i = 0; i < snakeBody.length; i++) {
         if (snakeX == snakeBody[i][0] && snakeY == snakeBody[i][1]) {
             gameOver = true;
-            alert("Game Over");
+            endGame();
         }
+    }
+}
+
+function endGame() {
+    var username = db.GetLoggedUser()["username"]
+    alert("Game Over\n" + username + " Thank you for playing!");
+    if (score > 0) {
+        db.AddToScore(Math.ceil(score / 5), username, "Snake game");
+        db.LoadUser()
     }
 }
 

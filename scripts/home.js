@@ -1,14 +1,10 @@
-LoadUser();
+import * as db from '../scripts/dbfuncs.js'
 
 
-function LoadUser(){
-    var userElement = document.getElementById("navusername");
-    var pagetitle = document.querySelector("title");
-    pagetitle.innerHTML = pagetitle.innerHTML + " " + GetLoggedUser()["username"];;
-    //userElement.value = LoggedUser["username"];
-    userElement.innerHTML = GetLoggedUser()["username"];
-    console.log(userElement);
-}
+db.LoadUser();
+
+
+
 
 function GetLoggedUser() {
     return JSON.parse(localStorage.getItem("LoggedUser"));

@@ -1,106 +1,91 @@
-var IsLoggedIn = false;
-var LoggedUser = {"username" : "", "password" : ""}
+import * as db from "../scripts/dbfuncs.js";
+
+if (db.GetLoggedUser()["username"] != "") {
+    var LoggedOutUser = db.GetLoggedUser()["username"];
+    if (IsLastLoginDay(LoggedOutUser)) {
+        db.LogOut();
+    } else {
+        document.getElementById("UsernameText").value = db.GetLoggedUser()["username"];
+        document.getElementById("PasswordText").value = db.GetLoggedUser()["password"];
+        LogIn();
+    }
+}
+
+document.getElementById("LogInButton").addEventListener("click", LogIn);
+document.getElementById("SignUpButton").addEventListener("click", SignUp);
 
 
-function LogIn(){
-    var usersdatabase = GetDatabase();
+function LogIn() {
+    var usersdatabase = db.GetDatabase();
     var userElement = document.getElementById("UsernameText");
     var username = userElement.value;
     var passElement = document.getElementById("PasswordText");
     var password = passElement.value;
-    if(usersdatabase[username]["Password"] != password)
-    {
+    if (usersdatabase[username]["Password"] != password) {
         console.log("password doesnt match");
         return;
     }
-    const d = new Date();
-    var text = d.toString();
-    usersdatabase[username]["Log"] = usersdatabase[username]["Log"] + "\nLogged in on " + text;
-    var addpoints =
-     usersdatabase[username]["LastLogin"]["Day"] + 1 != d.getDate() ||
-     usersdatabase[username]["LastLogin"]["Month"] != d.getMonth() ||
-     usersdatabase[username]["LastLogin"]["Year"] != d.getFullYear(); 
-    LoggedUser["username"] = username;
-    LoggedUser["password"] = password;
-    SaveDatabase(usersdatabase);
-    if(addpoints){
-        AddToScore(5, username, "daily login");
+
+    db.SaveDatabase(usersdatabase);
+    if (IsLastLoginDay(username)) {
+        db.AddToScore(5, username, "daily login");
+        UpdateLastLogin(username);
     }
-    SaveLoggedUser();
+    db.SaveLoggedUser(username, password);
     LoadHomePage();
 }
 
-function AddUserLog(Log, username){
-    var usersdatabase = GetDatabase();
-    usersdatabase[username]["Log"] = usersdatabase[username]["Log"] + "\n" + Log;
-    SaveDatabase(usersdatabase);
-    return usersdatabase;
-}
 
-function SignUp(){
-    var usersdatabase = GetDatabase();
+
+function SignUp() {
+    var usersdatabase = db.GetDatabase();
     var userElement = document.getElementById("UsernameText");
     var username = userElement.value;
     var passElement = document.getElementById("PasswordText");
     var password = passElement.value;
-    if(!UsernameIsValid(username)) return;
-    
+    if (!UsernameIsValid(username)) return;
+
     const d = new Date();
     var text = d.toString();
     var logfile = "Signed up on " + text;
 
-    var User = {"Username" : username, "Password" : password, "Score" : 0, "Log" : logfile, "LastLogin" : {"Day" : d.getDate(), "Month" : d.getMonth(), "Year" : d.getFullYear()} }
+    var User = { "Username": username, "Password": password, "Score": 0, "Log": logfile, "LastLogin": { "Day": d.getDate(), "Month": d.getMonth(), "Year": d.getFullYear() } }
     usersdatabase[username] = User;
-    SaveDatabase(usersdatabase)
-    AddToScore(20, username, "Signing up")
+    db.SaveDatabase(usersdatabase)
+    db.AddToScore(20, username, "Signing up")
 }
 
 function UsernameIsValid(username) {
-    if(DoesUserExists(username)){
+    if (DoesUserExists(username)) {
         console.log("Username already in database!")
         return false;
     }
-    if(username == ""){
+    if (username == "") {
         console.log("Invalid username!")
         return false;
     }
     return true;
 }
 
-function GetDatabase(){ 
-    console.log("Loading...");
-    var data = JSON.parse(localStorage.getItem("Users"));
-    return data != null ? data : {};
-}
 
-function SaveDatabase(usersdatabase){
-    var data = JSON.stringify(usersdatabase)
-    console.log("saving " + data)
-    localStorage.setItem("Users", data);
-}
 
-function GetUserByUsername(username){ 
-    var database = GetDatabase();
+
+
+function GetUserByUsername(username) {
+    var database = db.GetDatabase();
     console.log(database[username] != null)
     return database[username] != null ? database[username] : null;
 }
 
-function DoesUserExists(username){
+function DoesUserExists(username) {
     return GetUserByUsername(username) != null;
 }
 
-function DeleteDatabase(){
-    SaveDatabase({});
-}
 
-function AddToScore(score, username, scorefor){
-    var usersdatabase = GetDatabase();
-    usersdatabase[username]["Log"] = usersdatabase[username]["Log"] + "\n" + "Added " + score + " to score" + (scorefor != "" ? (" for " + scorefor) : "");
-    usersdatabase[username]["Score"] = usersdatabase[username]["Score"] + score;
-    SaveDatabase(usersdatabase);
-}
 
-function LoadHomePage(){ 
+
+
+function LoadHomePage() {
     console.log("Loading other page");
     window.location.replace("../pages/home.html");
     return;
@@ -116,6 +101,24 @@ function LoadHomePage(){
     console.log(userElement);
 }
 
-function SaveLoggedUser() {
-     localStorage.setItem("LoggedUser", JSON.stringify(LoggedUser));
+function IsLastLoginDay(username) {
+    var usersdatabase = db.GetDatabase();
+    const d = new Date();
+    var text = d.toString();
+    usersdatabase[username]["Log"] = usersdatabase[username]["Log"] + "\nLogged in on " + text;
+    var sameDay =
+        usersdatabase[username]["LastLogin"]["Day"] != d.getDate() ||
+        usersdatabase[username]["LastLogin"]["Month"] != d.getMonth() ||
+        usersdatabase[username]["LastLogin"]["Year"] != d.getFullYear();
+    return sameDay;
+}
+
+function UpdateLastLogin(username) {
+    var usersdatabase = db.GetDatabase();
+
+    const d = new Date();
+    var text = d.toString();
+    var login = { "Day": d.getDate(), "Month": d.getMonth(), "Year": d.getFullYear() };
+    usersdatabase[username]["LastLogin"] = login;
+    db.SaveDatabase(usersdatabase);
 }
