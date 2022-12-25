@@ -27,7 +27,7 @@ export function AddToScore(score, username, scorefor) {
     usersdatabase[username]["Score"] = usersdatabase[username]["Score"] + score;
     SaveDatabase(usersdatabase);
 }
-function GetUserScore(username) {
+export function GetUserScore(username) {
     var usersdatabase = GetDatabase();
     return usersdatabase[username]["Score"];
 }
