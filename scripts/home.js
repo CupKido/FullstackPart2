@@ -6,6 +6,7 @@ db.LoadUser();
 LoadUserView();
 var passIsShown = false;
 
+
 function LoadUserView(){
 
     var usernameText = document.getElementById("usernameDisplay")

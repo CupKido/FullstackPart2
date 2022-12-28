@@ -1,5 +1,6 @@
 import * as db from "../scripts/dbfuncs.js";
 
+var loginFails = 0;
 if (db.GetLoggedUser()["username"] != "") {
     var LoggedOutUser = db.GetLoggedUser()["username"];
     if (IsLastLoginDay(LoggedOutUser)) {
@@ -16,13 +17,25 @@ document.getElementById("SignUpButton").addEventListener("click", SignUp);
 
 
 function LogIn() {
+    HideErrors();
+    if(loginFails > 3){
+        ShowManyFailsError();
+        return;
+    }
     var usersdatabase = db.GetDatabase();
     var userElement = document.getElementById("UsernameText");
     var username = userElement.value;
     var passElement = document.getElementById("PasswordText");
     var password = passElement.value;
+    if(usersdatabase[username] == undefined || usersdatabase[username] == null) {
+        loginFails += 1;
+        ShowUserError();
+        return;
+     }
     if (usersdatabase[username]["Password"] != password) {
+        loginFails += 1;
         console.log("password doesnt match");
+        ShowPasswordError();
         return;
     }
 
@@ -124,4 +137,26 @@ function UpdateLastLogin(username) {
     var login = { "Day": d.getDate(), "Month": d.getMonth(), "Year": d.getFullYear() };
     usersdatabase[username]["LastLogin"] = login;
     db.SaveDatabase(usersdatabase);
+}
+
+function ShowUserError(){ 
+    var label = document.getElementById("BadUsernameLabel");
+    label.classList.remove("hidden");
+}
+
+function ShowManyFailsError(){
+    var label = document.getElementById("ManyTrialsLabel");
+    label.classList.remove("hidden");
+}
+
+function ShowPasswordError(){ 
+    var label = document.getElementById("BadPasswordLabel");
+    label.classList.remove("hidden");
+}
+
+function HideErrors(){
+    var label1 = document.getElementById("BadPasswordLabel");
+    label1.classList.add("hidden");
+    var label2 = document.getElementById("BadUsernameLabel");
+    label2.classList.add("hidden");
 }

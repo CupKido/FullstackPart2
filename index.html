@@ -15,9 +15,12 @@
     <div class="login-form">
       <h1>Login</h1>
       <input id="UsernameText" type="text" name="username" placeholder="Username" required>
+      <label id="BadUsernameLabel" class="hidden login-error">User doesnt exist!</label>
       <input id="PasswordText" type="password" name="password" placeholder="Password" required>
+      <label id="BadPasswordLabel" class="hidden login-error">password doesnt match!</label>
       <button id="LogInButton" type="button">Log in</button>
       <button id="SignUpButton" type="button">Sign up</button>
+      <label id="ManyTrialsLabel" class="hidden login-error">Too many trials!</label>
     </div>
   </body>
 

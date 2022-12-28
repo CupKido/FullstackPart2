@@ -3,6 +3,10 @@
     display: none;
 }
 
+.login-error{
+    color: red;
+    font-size: 15px;
+}
 
 nav {
     background-color: #333;
