@@ -70,7 +70,7 @@ function update() {
     for (let i = snakeBody.length - 1; i > 0; i--) { //make each block of the snake's body taking the one above it starting by the tail thus making the snake one entity
         snakeBody[i] = snakeBody[i - 1];
     }
-    if (snakeBody.length) { //connect the head to the rest of the body
+    if (snakeBody.length) { //connect the head to the body
         snakeBody[0] = [snakeX, snakeY];
     }
 
