@@ -47,7 +47,7 @@ window.onload = function () {
             }
         })
     })
-    setInterval(update, 100); //100 milliseconds
+    setInterval(update, 100); //100 milliseconds-- call the update function every seconds
 }
 
 function update() {
@@ -56,7 +56,7 @@ function update() {
     }
     document.getElementById('score').innerHTML = "Score: " + score;
     context.fillStyle = "black";
-    context.fillRect(0, 0, board.width, board.height);
+    context.fillRect(0, 0, board.width, board.height); //color each block of the board in black
 
     context.fillStyle = "red";
     context.fillRect(foodX, foodY, blockSize, blockSize);
@@ -67,19 +67,20 @@ function update() {
         placeFood();
     }
 
-    for (let i = snakeBody.length - 1; i > 0; i--) {
+    for (let i = snakeBody.length - 1; i > 0; i--) { //make each block of the snake's body taking the one above it starting by the tail thus making the snake one entity
         snakeBody[i] = snakeBody[i - 1];
     }
-    if (snakeBody.length) {
+    if (snakeBody.length) { //connect the head to the rest of the body
         snakeBody[0] = [snakeX, snakeY];
     }
 
     context.fillStyle = "lime";
-    snakeX += velocityX * blockSize / speed;
+    snakeX += velocityX * blockSize / speed; /*set the place of the snake on X axe multiply by the size of a block 
+                                                what makes it move one block evry seconds so we divide it to make it slower*/
     snakeY += velocityY * blockSize / speed;
     context.fillRect(snakeX, snakeY, blockSize, blockSize);
     for (let i = 0; i < snakeBody.length; i++) {
-        context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);
+        context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize); //takes on eack element i the array the x and y coordinates and color it in snake color 
     }
 
     //game over conditions
@@ -106,7 +107,7 @@ function endGame() {
 }
 
 function changeDirection(e) {
-    if (e.code == "ArrowUp" && velocityY != 1) {
+    if (e.code == "ArrowUp" && velocityY != 1) {   //we dont allowed to go the opposite direction because he will fataly eats himself
         velocityX = 0;
         velocityY = -1;
     }
