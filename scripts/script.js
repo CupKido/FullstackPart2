@@ -97,16 +97,6 @@ function LoadHomePage() {
     console.log("Loading other page");
     window.location.replace("../pages/home.html");
     return;
-    var SigninDiv = document.getElementById("signin");
-    SigninDiv.classList.add("hidden");
-    var ContentDiv = document.getElementById("maincontent");
-    ContentDiv.classList.remove("hidden");
-    var userElement = document.getElementById("navusername");
-    var pagetitle = document.querySelector("title");
-    pagetitle.innerHTML = "Home";
-    //userElement.value = LoggedUser["username"];
-    userElement.innerHTML = LoggedUser["username"];
-    console.log(userElement);
 }
 
 function IsLastLoginDay(username) {
