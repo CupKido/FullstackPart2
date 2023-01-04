@@ -82,7 +82,7 @@ function endGame() {
     alert("Game Over" + " " + "Your score is: " + score + "\n" + db.LoggedUser["username"] + " Thank you for playing!");
 
     if (score > 0) {
-        db.AddToScore(Math.ceil(score / 500), db.GetLoggedUser()["username"], "2048 game")
+        db.AddToScore(Math.ceil(score / 200), db.GetLoggedUser()["username"], "2048 game")
         db.LoadUser()
     }
 }

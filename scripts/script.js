@@ -83,10 +83,6 @@ function UsernameIsValid(username) {
     return true;
 }
 
-
-
-
-
 function GetUserByUsername(username) {
     var database = db.GetDatabase();
     console.log(database[username] != null)
@@ -96,10 +92,6 @@ function GetUserByUsername(username) {
 function DoesUserExists(username) {
     return GetUserByUsername(username) != null;
 }
-
-
-
-
 
 function LoadHomePage() {
     console.log("Loading other page");
