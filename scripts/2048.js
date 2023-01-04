@@ -10,13 +10,6 @@ window.onload = function () {
 }
 
 function setGame() {
-    // board = [
-    //     [2, 2, 2, 2],
-    //     [2, 2, 2, 2],
-    //     [4, 4, 8, 8],
-    //     [4, 4, 8, 8]
-    // ];
-
     board = [
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -28,28 +21,30 @@ function setGame() {
         for (let c = 0; c < columns; c++) {
             let tile = document.createElement("div");
             tile.id = r.toString() + "-" + c.toString();
-            let num = board[r][c];
+           
+            let num = board[r][c]; 
             updateTile(tile, num);
             document.getElementById("board").append(tile);
         }
     }
-    //create 2 to begin the game
+    //create 2 two to begin the game
     setTwo();
     setTwo();
 
 }
 
-function updateTile(tile, num) {
-    tile.innerText = "";
-    tile.classList.value = ""; //clear the classList
-    tile.classList.add("tile");
+function  updateTile(tile, num) {
+    tile.innerText = "";     
+    tile.classList.value = ""; //clear the classList  enleve la couleur de carre a update
+    tile.classList.add("tile");           
     if (num > 0) {
         tile.innerText = num.toString();
-        if (num <= 4096) {
+        if (num <= 8192) {
             tile.classList.add("x" + num.toString());
-        } else {
-            tile.classList.add("x8192");
-        }
+        } 
+       /* else {
+            tile.classList.add("x8192"); 
+        }*/
     }
 }
 
@@ -93,19 +88,19 @@ function endGame() {
 }
 
 function filterZero(row) {
-    return row.filter(num => num != 0); //create new array of all nums != 0
+    return row.filter(num => num != 0); //create new array of all nums != 0 obviously it returns a copy not the original
 }
 
 function slide(row) {
     //[0, 2, 2, 2] 
-    row = filterZero(row); //[2, 2, 2]
+    row = filterZero(row); //[2, 2, 2] 
     for (let i = 0; i < row.length - 1; i++) {
         if (row[i] == row[i + 1]) {
             row[i] *= 2;
-            row[i + 1] = 0;
+            row[i + 1] = 0;   //[4, 0, 2]
             score += row[i];
         }
-    } //[4, 0, 2]
+    } 
     row = filterZero(row); //[4, 2]
     //add zeroes
     while (row.length < columns) {
@@ -118,8 +113,8 @@ function slideLeft() {
     for (let r = 0; r < rows; r++) {
         let row = board[r];
         row = slide(row);
-        board[r] = row;
-        for (let c = 0; c < columns; c++) {
+        board[r] = row; //update the board back 
+        for (let c = 0; c < columns; c++) {  //update the board ui
             let tile = document.getElementById(r.toString() + "-" + c.toString());
             let num = board[r][c];
             updateTile(tile, num);
@@ -127,7 +122,7 @@ function slideLeft() {
     }
 }
 
-function slideRight() {
+function slideRight() { //same as slide func used for left but in reverse order therefore we reverse before slide and after
     for (let r = 0; r < rows; r++) {
         let row = board[r];         //[0, 2, 2, 2]
         row.reverse();              //[2, 2, 2, 0]
@@ -141,7 +136,7 @@ function slideRight() {
     }
 }
 
-function slideUp() {
+function slideUp() { //here we also want to use slide func so we need to transpose the column to a row and then back in
     for (let c = 0; c < columns; c++) {
         let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
         row = slide(row);
@@ -150,7 +145,7 @@ function slideUp() {
         // board[2][c] = row[2];
         // board[3][c] = row[3];
         for (let r = 0; r < rows; r++) {
-            board[r][c] = row[r];
+            board[r][c] = row[r]; //transpose back to the column like commented above but here is quicker
             let tile = document.getElementById(r.toString() + "-" + c.toString());
             let num = board[r][c];
             updateTile(tile, num);
@@ -158,7 +153,7 @@ function slideUp() {
     }
 }
 
-function slideDown() {
+function slideDown() { //transpose and reverse and then back in
     for (let c = 0; c < columns; c++) {
         let row = [board[0][c], board[1][c], board[2][c], board[3][c]];
         row.reverse();
@@ -169,7 +164,7 @@ function slideDown() {
         // board[2][c] = row[2];
         // board[3][c] = row[3];
         for (let r = 0; r < rows; r++) {
-            board[r][c] = row[r];
+            board[r][c] = row[r]; 
             let tile = document.getElementById(r.toString() + "-" + c.toString());
             let num = board[r][c];
             updateTile(tile, num);
@@ -178,13 +173,13 @@ function slideDown() {
 }
 
 function setTwo() {
-    if (!hasEmptyTile()) {
+    if (!hasEmptyTile()) { //if there is no place gameover
         return false;
     }
-    let found = false;
-    while (!found) {
+    let found = false; //heve we found an empty place founded on the board to put a 2
+    while (!found) {  
         //find random row and column to place a 2 in
-        let r = Math.floor(Math.random() * rows);
+        let r = Math.floor(Math.random() * rows); //floor gives set to an int 
         let c = Math.floor(Math.random() * columns);
         if (board[r][c] == 0) {
             board[r][c] = 2;

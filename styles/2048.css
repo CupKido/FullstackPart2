@@ -14,13 +14,13 @@ hr {
     background-color: #cdc1b5;
     border: 6px solid #bbada0;
 
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
+    margin: 0 auto; /*allow us to center the board*/
+    display: flex;     /*allow us to make four block in a row and not each one on top of the other*/
+    flex-wrap: wrap;     /*part the the one above*/
 }
 
 .tile {
-    width: 90px;
+    width: 90px;  /*each tile has a border of 5px so not 100px*/
     height: 90px;
     border: 5px solid #bbada0;
 
